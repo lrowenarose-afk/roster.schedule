@@ -1,0 +1,56 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Schedule Lookup</title>
+<style>
+body { font-family: Arial; padding: 20px; }
+input { padding: 10px; width: 100%; margin-bottom: 10px; }
+table { border-collapse: collapse; width: 100%; }
+th, td { border: 1px solid #ccc; padding: 5px; font-size:12px; }
+</style>
+</head>
+<body>
+<h2>Enter ID Number</h2>
+<input id="idInput" placeholder="Enter your ID" />
+<button onclick="search()">View Schedule</button>
+<div id="result"></div>
+
+<script>
+fetch('schedule_data.json')
+.then(res => res.json())
+.then(data => { window.scheduleData = data; });
+
+function search() {
+    const id = document.getElementById('idInput').value;
+    const emp = scheduleData.find(x => String(x['ID Number']) === id);
+    const div = document.getElementById('result');
+
+    if (!emp) {
+        div.innerHTML = '<p>No record found</p>';
+        return;
+    }
+
+    let html = '<h3>' + emp['NAME'] + '</h3><table><tr>';
+
+    for (let key in emp) {
+        if (key !== 'NAME' && key !== 'ID Number' && key !== 'Pos') {
+            html += '<th>' + key + '</th>';
+        }
+    }
+
+    html += '</tr><tr>';
+
+    for (let key in emp) {
+        if (key !== 'NAME' && key !== 'ID Number' && key !== 'Pos') {
+            html += '<td>' + emp[key] + '</td>';
+        }
+    }
+
+    html += '</tr></table>';
+    div.innerHTML = html;
+}
+</script>
+</body>
+</html>
